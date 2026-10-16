@@ -1,15 +1,19 @@
 # meshcli
 
-Minimalist CLI for [meshcore-daemon](../daemon). Talks gRPC. No TUI, no
-colors, no progress bars — just plain text you can grep and pipe. Add
-`--json` for scriptable output.
+Minimal command-line client for [meshcore-daemon](../daemon), over gRPC.
+Output is plain text you can grep and pipe, or JSON with `--json`.
+
+## Vibecoded
+
+This project was mostly written by AI coding agents as an experiment in
+vibecoding. It works for me, but it hasn't had careful human review, so treat
+it accordingly and read the code before trusting it with anything important.
 
 ## Install
 
 ```sh
 python3 -m venv .venv
 .venv/bin/pip install -e .
-.venv/bin/pip install -e ".[dev]"   # only needed to regenerate stubs
 ```
 
 ## Usage
@@ -31,6 +35,9 @@ meshcli channels
 meshcli channels backfill                # attribute stored channel messages to their secret
 meshcli channels backfill --secret "Old=<32 hex chars>"   # include a retired channel's secret
 
+# trace a neighbouring repeater or room server (needs a known direct route)
+meshcli contacts ping alice
+
 # messages — one scrollback per peer or channel
 meshcli messages alice                   # direct messages with alice
 meshcli messages 0                       # channel 0 (Public)
@@ -49,35 +56,8 @@ meshcli --json contacts list
 meshcli --json messages alice --limit 5 | jq '.messages[].text'
 ```
 
-## Ping
-
-`meshcli contacts ping <contact>` sends a
-zero-hop trace to a neighbouring repeater or room server. `--hash-size 1|2|4`
-selects the **trace hash width**, not payload length. By default it follows the
-pubkey prefix you typed: the largest of 1/2/4 bytes not exceeding it (`3d` → 1,
-`3d5a` or `3d5a80` → 2, 8+ hex chars → 4); names default to 1.
-The ping RPC has a five-second deadline including command queueing and send
-acknowledgement; contact-name resolution happens before that RPC.
-Only a matching returned trace succeeds. `--json` includes elapsed milliseconds
-and per-hop SNR values.
-
-A known direct route is required; no implicit flood discovery or login is sent.
-Wider hashes require an unambiguous known full key for each shorter stored hop.
-The return route reverses the outward relays, so asymmetric paths may time out.
-Servers must permit forwarding, and multi-byte traces require compatible firmware
-(introduced in MeshCore v1.11). Traces are not authenticated identity proofs;
-short hashes can collide. A timeout cannot recall a packet already queued on the radio.
-
 ## Connection
 
 Defaults to `127.0.0.1:50051`. Override with `--host` / `--port` or env
 vars `MESHCLI_HOST` / `MESHCLI_PORT`. Set `MESHCLI_TLS=1` for TLS (with
 optional `MESHCLI_CA` / `MESHCLI_CERT` / `MESHCLI_KEY`).
-
-## Regenerating stubs
-
-```sh
-bash scripts/gen_protos.sh
-```
-
-Reads `../daemon/protos/meshcored.proto` and writes into `meshcli/pb/`.
