@@ -1,4 +1,4 @@
-"""meshcli command-line interface.
+"""meshwarden command-line interface.
 
 Subcommands (kept intentionally flat):
 
@@ -19,8 +19,8 @@ reused; a bare index reads everything recorded in that slot.
 
 Global flags:
   --json           emit JSON instead of plain text (scriptable)
-  --host HOST      daemon host (default 127.0.0.1, env MESHCLI_HOST)
-  --port PORT      daemon port (default 50051, env MESHCLI_PORT)
+  --host HOST      daemon host (default 127.0.0.1, env MESHWARDEN_HOST)
+  --port PORT      daemon port (default 50051, env MESHWARDEN_PORT)
 """
 
 from __future__ import annotations
@@ -65,20 +65,20 @@ TYPE_ROOM = 3
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
-        prog="meshcli",
-        description="Minimalist CLI for meshcore-daemon (gRPC).",
+        prog="meshwarden",
+        description="Minimalist CLI for meshwarden-daemon (gRPC).",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
             "Environment:\n"
-            "  MESHCLI_HOST   daemon host (default 127.0.0.1)\n"
-            "  MESHCLI_PORT   daemon port (default 50051)\n"
-            "  MESHCLI_TLS    set to 1 to use TLS\n"
+            "  MESHWARDEN_HOST   daemon host (default 127.0.0.1)\n"
+            "  MESHWARDEN_PORT   daemon port (default 50051)\n"
+            "  MESHWARDEN_TLS    set to 1 to use TLS\n"
         ),
     )
-    p.add_argument("--version", action="version", version=f"meshcli {__version__}")
+    p.add_argument("--version", action="version", version=f"meshwarden {__version__}")
     p.add_argument("--json", action="store_true", help="emit JSON instead of plain text")
-    p.add_argument("--host", default=None, help="daemon host (overrides MESHCLI_HOST)")
-    p.add_argument("--port", default=None, type=int, help="daemon port (overrides MESHCLI_PORT)")
+    p.add_argument("--host", default=None, help="daemon host (overrides MESHWARDEN_HOST)")
+    p.add_argument("--port", default=None, type=int, help="daemon port (overrides MESHWARDEN_PORT)")
 
     p.set_defaults(help_parser=p)
     sub = p.add_subparsers(dest="cmd", metavar="COMMAND")
@@ -168,9 +168,9 @@ def _channel_secret(value: str) -> tuple[str, bytes]:
 
 def _apply_overrides(args: argparse.Namespace) -> None:
     if args.host:
-        os.environ["MESHCLI_HOST"] = args.host
+        os.environ["MESHWARDEN_HOST"] = args.host
     if args.port:
-        os.environ["MESHCLI_PORT"] = str(args.port)
+        os.environ["MESHWARDEN_PORT"] = str(args.port)
 
 
 def _read_text(arg: str) -> str:

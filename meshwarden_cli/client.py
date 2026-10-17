@@ -1,4 +1,4 @@
-"""Thin gRPC client wrapper for meshcore-daemon."""
+"""Thin gRPC client wrapper for meshwarden-daemon."""
 
 from __future__ import annotations
 
@@ -21,16 +21,16 @@ def _env(name: str, default: str) -> str:
 
 
 def dial() -> grpc.Channel:
-    host = _env("MESHCLI_HOST", DEFAULT_HOST)
-    port = _env("MESHCLI_PORT", str(DEFAULT_PORT))
+    host = _env("MESHWARDEN_HOST", DEFAULT_HOST)
+    port = _env("MESHWARDEN_PORT", str(DEFAULT_PORT))
     target = f"{host}:{port}"
     # Insecure by default; the daemon binds insecure. TLS can be added later
-    # by setting MESHCLI_TLS=1 and pointing at CA/cert/key env vars.
-    if _env("MESHCLI_TLS", "") in ("1", "true", "yes"):
+    # by setting MESHWARDEN_TLS=1 and pointing at CA/cert/key env vars.
+    if _env("MESHWARDEN_TLS", "") in ("1", "true", "yes"):
         creds = grpc.ssl_channel_credentials(
-            root_certificates=os.environ.get("MESHCLI_CA", "").encode() or None,
-            private_key=os.environ.get("MESHCLI_KEY", "").encode() or None,
-            certificate_chain=os.environ.get("MESHCLI_CERT", "").encode() or None,
+            root_certificates=os.environ.get("MESHWARDEN_CA", "").encode() or None,
+            private_key=os.environ.get("MESHWARDEN_KEY", "").encode() or None,
+            certificate_chain=os.environ.get("MESHWARDEN_CERT", "").encode() or None,
         )
         return grpc.secure_channel(target, creds)
     return grpc.insecure_channel(target)
@@ -141,8 +141,8 @@ def call(fn):
         if code == grpc.StatusCode.UNAVAILABLE:
             print(
                 f"error: cannot reach daemon at "
-                f"{_env('MESHCLI_HOST', DEFAULT_HOST)}:"
-                f"{_env('MESHCLI_PORT', str(DEFAULT_PORT))} "
+                f"{_env('MESHWARDEN_HOST', DEFAULT_HOST)}:"
+                f"{_env('MESHWARDEN_PORT', str(DEFAULT_PORT))} "
                 f"({details or 'connection refused'})",
                 file=sys.stderr,
             )

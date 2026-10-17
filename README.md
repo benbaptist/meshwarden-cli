@@ -1,6 +1,6 @@
-# meshcli
+# meshwarden-cli
 
-Minimal command-line client for [meshcore-daemon](../daemon), over gRPC.
+Minimal command-line client for [meshwarden-daemon](../daemon), over gRPC.
 Output is plain text you can grep and pipe, or JSON with `--json`.
 
 ## Vibecoded
@@ -24,7 +24,7 @@ git submodule at `protos/`. Clone with `--recurse-submodules` (or run
 
 ```sh
 .venv/bin/pip install -e '.[dev]'
-bash protos/gen_python.sh meshcli/pb
+bash protos/gen_python.sh meshwarden_cli/pb
 ```
 
 Run the tests with `.venv/bin/python -m unittest discover tests`.
@@ -33,44 +33,44 @@ Run the tests with `.venv/bin/python -m unittest discover tests`.
 
 ```sh
 # daemon + device status
-meshcli status
+meshwarden status
 
 # contacts
-meshcli contacts list
-meshcli contacts list alice              # substring filter
-meshcli contacts list --device-only
-meshcli contacts list --type 1           # 1=chat, 2=repeater, 3=room
-meshcli contacts show alice              # by name
-meshcli contacts show 80992ed24bb7       # by pubkey prefix (any hex length)
+meshwarden contacts list
+meshwarden contacts list alice              # substring filter
+meshwarden contacts list --device-only
+meshwarden contacts list --type 1           # 1=chat, 2=repeater, 3=room
+meshwarden contacts show alice              # by name
+meshwarden contacts show 80992ed24bb7       # by pubkey prefix (any hex length)
 
 # channels
-meshcli channels
-meshcli channels backfill                # attribute stored channel messages to their secret
-meshcli channels backfill --secret "Old=<32 hex chars>"   # include a retired channel's secret
+meshwarden channels
+meshwarden channels backfill                # attribute stored channel messages to their secret
+meshwarden channels backfill --secret "Old=<32 hex chars>"   # include a retired channel's secret
 
 # trace a neighbouring repeater or room server (needs a known direct route)
-meshcli contacts ping alice
+meshwarden contacts ping alice
 
 # messages — one scrollback per peer or channel
-meshcli messages alice                   # direct messages with alice
-meshcli messages 0                       # channel 0 (Public)
-meshcli messages "#berrien"              # channel by name
-meshcli messages alice --limit 100 --direction in
+meshwarden messages alice                   # direct messages with alice
+meshwarden messages 0                       # channel 0 (Public)
+meshwarden messages "#berrien"              # channel by name
+meshwarden messages alice --limit 100 --direction in
 
 # send
-meshcli send alice "hello there"
-meshcli send alice -                     # read body from stdin
-echo "long message" | meshcli send alice -
-meshcli send-channel 0 "hello channel"
-meshcli send-channel "#berrien" "hello"
+meshwarden send alice "hello there"
+meshwarden send alice -                     # read body from stdin
+echo "long message" | meshwarden send alice -
+meshwarden send-channel 0 "hello channel"
+meshwarden send-channel "#berrien" "hello"
 
 # scriptable JSON
-meshcli --json contacts list
-meshcli --json messages alice --limit 5 | jq '.messages[].text'
+meshwarden --json contacts list
+meshwarden --json messages alice --limit 5 | jq '.messages[].text'
 ```
 
 ## Connection
 
 Defaults to `127.0.0.1:50051`. Override with `--host` / `--port` or env
-vars `MESHCLI_HOST` / `MESHCLI_PORT`. Set `MESHCLI_TLS=1` for TLS (with
-optional `MESHCLI_CA` / `MESHCLI_CERT` / `MESHCLI_KEY`).
+vars `MESHWARDEN_HOST` / `MESHWARDEN_PORT`. Set `MESHWARDEN_TLS=1` for TLS (with
+optional `MESHWARDEN_CA` / `MESHWARDEN_CERT` / `MESHWARDEN_KEY`).

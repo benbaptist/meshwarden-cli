@@ -6,10 +6,10 @@ from unittest.mock import Mock, patch
 
 import grpc
 
-from meshcli.cli import main
-from meshcli.client import Client
-from meshcli.pb import meshcored_pb2 as pb
-from meshcli.resolve import AmbiguousError, InvalidError, resolve_message_target
+from meshwarden_cli.cli import main
+from meshwarden_cli.client import Client
+from meshwarden_cli.pb import meshcored_pb2 as pb
+from meshwarden_cli.resolve import AmbiguousError, InvalidError, resolve_message_target
 
 
 def contact(name="Alice", key="abcdef" * 10 + "abcd", kind=1):
@@ -30,7 +30,7 @@ class MessagesTests(unittest.TestCase):
 
     def run_cli(self, *args, stdin=""):
         out, err = io.StringIO(), io.StringIO()
-        with patch("meshcli.cli.Client", return_value=self.client), patch("sys.stdin", io.StringIO(stdin)), redirect_stdout(out), redirect_stderr(err):
+        with patch("meshwarden_cli.cli.Client", return_value=self.client), patch("sys.stdin", io.StringIO(stdin)), redirect_stdout(out), redirect_stderr(err):
             try:
                 code = main(args)
             except SystemExit as exc:
@@ -39,7 +39,7 @@ class MessagesTests(unittest.TestCase):
 
     def test_bare_help_without_connection(self):
         for args in [(), ("contacts",), ("messages",)]:
-            with self.subTest(args=args), patch("meshcli.cli.Client") as constructor:
+            with self.subTest(args=args), patch("meshwarden_cli.cli.Client") as constructor:
                 with redirect_stdout(io.StringIO()) as out:
                     self.assertEqual(main(args), 0)
                 self.assertIn("usage:", out.getvalue())

@@ -1,7 +1,7 @@
 [project]
-name = "meshcli"
+name = "meshwarden-cli"
 version = "0.1.0"
-description = "Minimalist CLI for meshcore-daemon (gRPC)"
+description = "Minimalist CLI for meshwarden-daemon (gRPC)"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 dependencies = [
@@ -15,11 +15,11 @@ dev = [
 ]
 
 [project.scripts]
-meshcli = "meshcli.cli:main"
+meshwarden = "meshwarden_cli.cli:main"
 
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-include = ["meshcli*"]
+include = ["meshwarden_cli*"]

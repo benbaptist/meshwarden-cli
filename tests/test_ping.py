@@ -6,9 +6,9 @@ from unittest.mock import Mock, patch
 
 import grpc
 
-from meshcli.cli import main
-from meshcli.client import Client
-from meshcli.pb import meshcored_pb2 as pb
+from meshwarden_cli.cli import main
+from meshwarden_cli.client import Client
+from meshwarden_cli.pb import meshcored_pb2 as pb
 
 
 class PingTests(unittest.TestCase):
@@ -20,7 +20,7 @@ class PingTests(unittest.TestCase):
 
     def run_cli(self, *args):
         out, err = io.StringIO(), io.StringIO()
-        with patch("meshcli.cli.Client", return_value=self.client), redirect_stdout(out), redirect_stderr(err):
+        with patch("meshwarden_cli.cli.Client", return_value=self.client), redirect_stdout(out), redirect_stderr(err):
             try:
                 code = main(args)
             except SystemExit as exc:
