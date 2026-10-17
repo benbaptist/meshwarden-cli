@@ -16,6 +16,19 @@ python3 -m venv .venv
 .venv/bin/pip install -e .
 ```
 
+## Development
+
+The gRPC definition lives in the shared `meshwarden-protos` repo, included as a
+git submodule at `protos/`. Clone with `--recurse-submodules` (or run
+`git submodule update --init`), then after changing the proto regenerate the stubs:
+
+```sh
+.venv/bin/pip install -e '.[dev]'
+bash protos/gen_python.sh meshcli/pb
+```
+
+Run the tests with `.venv/bin/python -m unittest discover tests`.
+
 ## Usage
 
 ```sh
